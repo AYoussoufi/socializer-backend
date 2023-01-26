@@ -1,0 +1,13 @@
+package com.project.socializer.requests.error;
+
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.NoArgsConstructor;
+
+@Data
+@AllArgsConstructor
+@NoArgsConstructor
+public class ErrorResponse  {
+    private Integer error;
+    private String reason;
+}
