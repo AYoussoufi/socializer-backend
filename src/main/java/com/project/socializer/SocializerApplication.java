@@ -1,6 +1,6 @@
 package com.project.socializer;
 
-import com.project.socializer.test.InitService;
+import com.project.socializer.runner.InitService;
 import com.project.socializer.user.entity.Hobby;
 import com.project.socializer.user.entity.Roles;
 import org.springframework.beans.factory.annotation.Autowired;

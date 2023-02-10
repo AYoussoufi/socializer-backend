@@ -1,4 +1,4 @@
-package com.project.socializer.test;
+package com.project.socializer.runner;
 
 import com.project.socializer.user.entity.Hobby;
 import org.springframework.data.jpa.repository.JpaRepository;

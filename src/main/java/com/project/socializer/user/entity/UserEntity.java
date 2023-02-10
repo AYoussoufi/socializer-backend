@@ -51,6 +51,9 @@ public class UserEntity implements UserDetails {
     @Column(nullable = true,unique = false)
     private String imageFileName = "defaultImage";
 
+    @Column(nullable = false)
+    private boolean isEnabled = true;
+
     @ManyToMany
     private Set<Friend> friends = new HashSet<Friend>();
     @ManyToMany
@@ -93,7 +96,7 @@ public class UserEntity implements UserDetails {
 
     @Override
     public boolean isAccountNonLocked() {
-        return false;
+        return true;
     }
 
     @Override
@@ -103,7 +106,7 @@ public class UserEntity implements UserDetails {
 
     @Override
     public boolean isEnabled() {
-        return true;
+        return this.isEnabled;
     }
 
 }

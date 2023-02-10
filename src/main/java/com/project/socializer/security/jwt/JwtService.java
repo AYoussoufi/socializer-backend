@@ -6,13 +6,19 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.io.IOException;
+import java.security.NoSuchAlgorithmException;
+import java.security.spec.InvalidKeySpecException;
+import java.time.Instant;
+import java.time.temporal.ChronoUnit;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Objects;
 
-@Service
+
 @Slf4j
+@Service
 public class JwtService {
 
 
@@ -21,45 +27,47 @@ public class JwtService {
     @Autowired
     public JwtService(JwtConfig jwtConfig) {
         this.jwtConfig = jwtConfig;
+
     }
 
 
-    public String createAccessJwtToken(String username){
-        Date nowDate = new Date();
-        Date ExpiryDate = new Date(nowDate.getTime() + jwtConfig.getExpirationTime());
+    public String createAccessJwtToken(String username) throws IOException, NoSuchAlgorithmException, InvalidKeySpecException {
+        Date now = new Date();
 
         return Jwts.builder()
                 .setSubject(username)
-                .setIssuedAt(nowDate)
-                .setExpiration(ExpiryDate)
-                .signWith(SignatureAlgorithm.ES256, jwtConfig.getSecretKey())
+                .setIssuedAt(now)
+                .setExpiration(new Date(now.getTime() + 30 * 60 * 1000))
+                .signWith(SignatureAlgorithm.RS256, jwtConfig.getPrivateSecretKey())
                 .compact();
     }
 
-    public String createRefreshJwtToken(String username){
-        Date nowDate = new Date();
-        Date ExpiryDate = new Date(nowDate.getTime() + (Long.parseLong(jwtConfig.getExpirationTime())* 2));
+    public String createRefreshJwtToken(String username) throws IOException, NoSuchAlgorithmException, InvalidKeySpecException {
+        Date now = new Date();
 
         return Jwts.builder()
                 .setSubject(username)
-                .setIssuedAt(nowDate)
-                .setExpiration(ExpiryDate)
-                .signWith(SignatureAlgorithm.ES256, jwtConfig.getSecretKey())
+                .setIssuedAt(now)
+                .setExpiration(new Date(now.getTime() + 60 * 60 * 1000))
+                .signWith(SignatureAlgorithm.RS256, jwtConfig.getPrivateSecretKey())
                 .compact();
     }
 
-    public String getUsernameFromToken(String token){
+    public String getUsernameFromToken(String token) throws IOException, NoSuchAlgorithmException, InvalidKeySpecException {
         Claims claims = Jwts.parser()
-                .setSigningKey(jwtConfig.getSecretKey())
+                .setSigningKey(jwtConfig.getPublicSecretKey())
                 .parseClaimsJws(token)
                 .getBody();
        return claims.getSubject();
     }
 
     public boolean verifyToken(String token){
-            log.warn(token);
-            Jwts.parser().setSigningKey(jwtConfig.getSecretKey()).parseClaimsJws(token);
+        try{
+            Jwts.parser().setSigningKey(jwtConfig.getPublicSecretKey()).parseClaimsJws(token);
             return true;
+        }catch (Exception e){
+            return false;
+        }
     }
 
     public  Map<String,String> getTokenFromHeader(HttpServletRequest request){

@@ -1,6 +1,5 @@
-package com.project.socializer.test;
+package com.project.socializer.runner;
 
-import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
