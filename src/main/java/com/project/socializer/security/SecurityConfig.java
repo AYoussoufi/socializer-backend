@@ -3,25 +3,17 @@ package com.project.socializer.security;
 
 
 
-import com.project.socializer.requests.login.service.LoginService;
-import com.project.socializer.security.config.JwtConfigurer;
 import com.project.socializer.security.jwt.JwtService;
-import io.jsonwebtoken.Jwt;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.AuthenticationManager;
-import org.springframework.security.authentication.AuthenticationProvider;
 import org.springframework.security.authentication.ProviderManager;
 import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
-import org.springframework.security.config.annotation.ObjectPostProcessor;
-import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.http.SessionCreationPolicy;
-import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -35,10 +27,11 @@ import org.springframework.security.web.DefaultSecurityFilterChain;
 public class SecurityConfig {
 
     private final JwtService jwtService;
-
+    private final SecurityJwtConfigurer securityJwtConfigurer;
     @Autowired
-    public SecurityConfig(JwtService jwtService) {
+    public SecurityConfig(JwtService jwtService, SecurityJwtConfigurer securityJwtConfigurer) {
         this.jwtService = jwtService;
+        this.securityJwtConfigurer = securityJwtConfigurer;
     }
 
     @Bean
@@ -49,11 +42,7 @@ public class SecurityConfig {
     public DefaultSecurityFilterChain securityWebFilterChain(HttpSecurity http) throws Exception {
         return http.csrf().disable()
                 .authorizeHttpRequests()
-                .requestMatchers("/api/v1/auth/signup")
-                .permitAll()
-                .requestMatchers("/api/v1/auth/login")
-                .permitAll()
-                .requestMatchers("/test")
+                .requestMatchers("/api/v1/public/**")
                 .permitAll()
                 .anyRequest()
                 .authenticated()
@@ -61,7 +50,7 @@ public class SecurityConfig {
                 .sessionManagement()
                 .sessionCreationPolicy(SessionCreationPolicy.STATELESS)
                 .and()
-                .apply(new JwtConfigurer(jwtService))
+                .apply(securityJwtConfigurer)
                 .and()
                 .formLogin().disable()
                 .build();

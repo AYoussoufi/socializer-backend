@@ -32,11 +32,7 @@ public class LoginService {
         UsernamePasswordAuthenticationToken usernamePasswordAuthenticationToken = new UsernamePasswordAuthenticationToken(username,password);
         try{
             Authentication authUser = authenticationManager.authenticate(usernamePasswordAuthenticationToken);
-            String accessToken = jwtService.createAccessJwtToken(username);
-            String refreshToken = jwtService.createRefreshJwtToken(username);
-            Map<String, String> tokens = new HashMap<>();
-            tokens.put("accessToken",accessToken);
-            tokens.put("refreshToken",refreshToken);
+            Map<String, String> tokens = jwtService.createAccessRefreshJwtToken(username);
             this.objectMapper.writeValue(response.getWriter(),tokens);
         }catch (Exception e){
             throw new BadCredentialsException(e.getMessage());

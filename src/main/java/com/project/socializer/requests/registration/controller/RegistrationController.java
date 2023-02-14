@@ -24,12 +24,17 @@ import java.util.NoSuchElementException;
 
 @RestController
 public class RegistrationController {
-    @Autowired
+
     RegistrationService registrationService;
-    @Autowired
     UserRepository userRepository;
 
-    @PostMapping(value = "/api/v1/auth/signup")
+    @Autowired
+    public RegistrationController(RegistrationService registrationService, UserRepository userRepository) {
+        this.registrationService = registrationService;
+        this.userRepository = userRepository;
+    }
+
+    @PostMapping(value = "/api/v1/public/auth/signup")
     public String signUp(@Valid @RequestBody SignUpRequest signUpRequest, BindingResult bindingResult, HttpServletResponse response) throws UserExistException {
         if (bindingResult.hasErrors()){
             throw new ValidationException("received input are invalid");

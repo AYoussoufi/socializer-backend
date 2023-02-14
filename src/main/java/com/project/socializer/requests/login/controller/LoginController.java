@@ -34,7 +34,7 @@ public class LoginController {
         this.loginService = loginService;
     }
 
-    @PostMapping("/api/v1/auth/login")
+    @PostMapping("/api/v1/public/auth/login")
     public void logIn(@Valid @RequestBody LoginRequest loginRequest, BindingResult bindingResult,HttpServletResponse response){
         if (bindingResult.hasErrors()){
             throw new ValidationException("received input are invalid");

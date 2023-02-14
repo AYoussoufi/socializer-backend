@@ -27,38 +27,40 @@ public class JwtService {
     @Autowired
     public JwtService(JwtConfig jwtConfig) {
         this.jwtConfig = jwtConfig;
-
     }
 
 
-    public String createAccessJwtToken(String username) throws IOException, NoSuchAlgorithmException, InvalidKeySpecException {
-        Date now = new Date();
 
-        return Jwts.builder()
+    public Map<String, String> createAccessRefreshJwtToken(String username) throws IOException, NoSuchAlgorithmException, InvalidKeySpecException {
+        Date now = new Date();
+        String accessToken = Jwts.builder()
                 .setSubject(username)
                 .setIssuedAt(now)
                 .setExpiration(new Date(now.getTime() + 30 * 60 * 1000))
                 .signWith(SignatureAlgorithm.RS256, jwtConfig.getPrivateSecretKey())
                 .compact();
-    }
-
-    public String createRefreshJwtToken(String username) throws IOException, NoSuchAlgorithmException, InvalidKeySpecException {
-        Date now = new Date();
-
-        return Jwts.builder()
+        String refreshToken = Jwts.builder()
                 .setSubject(username)
                 .setIssuedAt(now)
                 .setExpiration(new Date(now.getTime() + 60 * 60 * 1000))
                 .signWith(SignatureAlgorithm.RS256, jwtConfig.getPrivateSecretKey())
                 .compact();
+        Map<String , String> tokens = new HashMap<>();
+        tokens.put("accessToken",accessToken);
+        tokens.put("refreshToken",refreshToken);
+        return tokens;
     }
 
-    public String getUsernameFromToken(String token) throws IOException, NoSuchAlgorithmException, InvalidKeySpecException {
-        Claims claims = Jwts.parser()
-                .setSigningKey(jwtConfig.getPublicSecretKey())
-                .parseClaimsJws(token)
-                .getBody();
-       return claims.getSubject();
+    public String getUsernameFromToken(String token) {
+        try{
+            Claims claims = Jwts.parser()
+                    .setSigningKey(jwtConfig.getPublicSecretKey())
+                    .parseClaimsJws(token)
+                    .getBody();
+            return claims.getSubject();
+        }catch(Exception e){
+            throw new RuntimeException(e.getMessage());
+        }
     }
 
     public boolean verifyToken(String token){
