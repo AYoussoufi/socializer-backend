@@ -20,13 +20,13 @@ public class UserDetailService implements UserDetailsService {
         this.userRepository = userRepository;
     }
 
-    @Override
-    public UserDetails loadUserByUsername(String username) {
-        try{
-            return userRepository.findByEmail(username).get();
-        }catch (NoSuchElementException e ){
-            throw new UserEmailNotFoundException("email not found, please signup before trying to login.");
+        @Override
+        public UserDetails loadUserByUsername(String username) {
+            try{
+                return userRepository.findByEmail(username).get();
+            }catch (NoSuchElementException e ){
+                throw new UserEmailNotFoundException("email not found, please signup before trying to login.");
+            }
         }
-    }
 }
 

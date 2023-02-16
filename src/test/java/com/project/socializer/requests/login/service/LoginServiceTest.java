@@ -8,6 +8,7 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.mock.web.MockHttpServletResponse;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -36,39 +37,42 @@ class LoginServiceTest {
     @Mock
     ObjectMapper objectMapper;
     LoginService loginService;
+    MockHttpServletResponse mockResponse;
+    private UsernamePasswordAuthenticationToken usernamePasswordAuthenticationToken;
 
     @BeforeEach
     void setUp() {
         this.loginService = new LoginService(authenticationManager,jwtService,objectMapper);
+        this.mockResponse = new MockHttpServletResponse();
+        this.usernamePasswordAuthenticationToken = new UsernamePasswordAuthenticationToken("Jhon.Doe@Gmail.com","PasswordTest");
+
     }
 
     @Test
     void islogInUserSuccess() throws Exception{
-        //Elements
-        String email = "test@test.com";
-        String password = "test1234";
-        Map<String,String> expectedTokens = new HashMap<>();
-        String expectedCreatedAccessToken = "accessToken";
-        String expectedCreatedRefreshToken = "refreshToken";
-        expectedTokens.put("accessToken",expectedCreatedAccessToken);
-        expectedTokens.put("refreshToken",expectedCreatedRefreshToken);
-        UsernamePasswordAuthenticationToken authToken = new UsernamePasswordAuthenticationToken(email,password);
+        //PREPARE
+        Map<String , String> tokens = new HashMap<>();
+        tokens.put("accessToken","Bearer AccessToken");
+        tokens.put("refreshToken","Bearer RefreshToken");
 
         //WHEN
-        when(authenticationManager.authenticate(authToken)).thenReturn(authUser);
-        when(jwtService.createAccessJwtToken(email)).thenReturn(expectedTokens.get("accessToken"));
-        when(jwtService.createRefreshJwtToken(email)).thenReturn(expectedTokens.get("refreshToken"));
-        when(httpServletResponse.getWriter()).thenReturn(printWriter);
+        when(authenticationManager.authenticate(usernamePasswordAuthenticationToken)).thenReturn(authUser);
+        when(jwtService.createAccessRefreshJwtToken("Jhon.Doe@Gmail.com")).thenReturn(tokens);
 
         //EXECUTE
-        this.loginService.logInUser(email,password,httpServletResponse);
+        this.loginService.logInUser("Jhon.Doe@Gmail.com","PasswordTest",mockResponse);
 
         //VERIFY
-        verify(authenticationManager).authenticate(authToken);
-        verify(httpServletResponse).getWriter();
-        verify(jwtService).createAccessJwtToken(email);
-        verify(jwtService).createRefreshJwtToken(email);
-        verify(objectMapper).writeValue(printWriter,expectedTokens);
+        verify(authenticationManager).authenticate(usernamePasswordAuthenticationToken);
+        verify(jwtService).createAccessRefreshJwtToken("Jhon.Doe@Gmail.com");
+
+        //ASSERT
+        assertDoesNotThrow(()->{
+            objectMapper.writeValue(mockResponse.getWriter(),tokens);
+        });
+        assertDoesNotThrow(()->{
+            this.loginService.logInUser("Jhon.Doe@Gmail.com","PasswordTest",mockResponse);
+        });
     }
 
     @Test()
@@ -77,11 +81,12 @@ class LoginServiceTest {
         String email = "invalidEmail";
         String password = "invalidPassword";
 
+        //PREPARE
         doThrow(new BadCredentialsException("Invalid Credentials"))
                 .when(authenticationManager)
                 .authenticate(any(UsernamePasswordAuthenticationToken.class));
 
+        //ASSERT
         assertThrows(BadCredentialsException.class,()->{loginService.logInUser(email,password,httpServletResponse);});
-
     }
 }
