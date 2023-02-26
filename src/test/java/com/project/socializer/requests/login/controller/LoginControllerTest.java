@@ -2,77 +2,93 @@ package com.project.socializer.requests.login.controller;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.project.socializer.requests.login.request.LoginRequest;
-import com.project.socializer.requests.login.service.LoginService;
-import jakarta.servlet.http.HttpServletResponse;
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Test;
+import com.project.socializer.requests.registration.request.SignUpRequest;
+import com.project.socializer.user.entity.Roles;
+import com.project.socializer.user.entity.UserEntity;
+import com.project.socializer.user.repository.RolesRepository;
+import com.project.socializer.user.repository.UserRepository;
+import lombok.extern.slf4j.Slf4j;
+import org.junit.jupiter.api.*;
 import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
+import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
+import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
+import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.MediaType;
-import org.springframework.mock.web.MockHttpServletResponse;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.test.web.servlet.MockMvc;
-import org.springframework.test.web.servlet.setup.MockMvcBuilders;
-import org.springframework.web.context.WebApplicationContext;
-import org.assertj.core.api.AbstractStringAssert;
+import org.springframework.test.web.servlet.MvcResult;
 
+import java.util.Collections;
 import java.util.HashMap;
+import java.util.Map;
 
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.junit.jupiter.api.Assertions.*;
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.ArgumentMatchers.anyString;
-import static org.mockito.Mockito.*;
+import static org.hamcrest.Matchers.matchesPattern;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
-@WebMvcTest(LoginController.class)
+@AutoConfigureMockMvc
 @ExtendWith(MockitoExtension.class)
+@SpringBootTest
 class LoginControllerTest {
 
-    private LoginController loginController;
     @Autowired
     private MockMvc mockMvc;
     @Autowired
-    private WebApplicationContext webApplicationContext;
-    private ObjectMapper objectMapper;
-    private LoginRequest loginRequest;
-    @Mock
-    private LoginService loginService;
+    private UserRepository userRepository;
+    @Autowired
+    private RolesRepository rolesRepository;
+
+    private UserEntity user;
+
+
+    @Autowired
+    PasswordEncoder passwordEncoder;
+    private final ObjectMapper objectMapper = new ObjectMapper();
+
     @BeforeEach
-    void setUp(){
-        this.loginController = new LoginController(loginService);
-        this.loginRequest = new LoginRequest("jhon.doe@gmail.com","passwordTest");
-        this.mockMvc = MockMvcBuilders.webAppContextSetup(webApplicationContext).build();
-        this.objectMapper = new ObjectMapper();
+    public void setUp() {
+        if(userRepository.findByEmail("test@gmail.com").isEmpty()){
+            rolesRepository.save(new Roles("USER"));
+            user = new UserEntity("test","FirstName","LastName","test@gmail.com",passwordEncoder.encode("test123"),"1999-12-19",rolesRepository.getByRoleName("USER").get());
+            user.setEnabled(true);
+            userRepository.save(user);
+        }
     }
-    /*@Test
-    void testLogInOkRequestController() throws Exception {
-                //PREPARE
-        HashMap<String , String> tokens = new HashMap<>();
-        tokens.put("accessToken","Bearer AccessToken");
-        tokens.put("refreshToken","Bearer RefreshToken");
 
-        //WHEN
-        doNothing().when(loginService).logInUser(loginRequest.getEmail(),loginRequest.getPassword(),any(HttpServletResponse.class));
+  @AfterEach
+  public void afterEach(){
+      userRepository.deleteAll();
+        rolesRepository.deleteAll();
 
-        //EXECUTE
-        MockHttpServletResponse mockHttpServletResponse = new MockHttpServletResponse();
+  }
 
-mockMvc.perform(post("/api/v1/public/auth/login")
-                .contentType(MediaType.APPLICATION_JSON)
-                .content(this.objectMapper.writeValueAsString(loginRequest)))
-                .andExpect(status().isOk());
-
-        //VERIFY
-        verify(loginService).logInUser(loginRequest.getEmail(),loginRequest.getPassword(),any(HttpServletResponse.class));
-        assertThat(mockHttpServletResponse.getContentAsString()).isEqualTo(objectMapper.writeValueAsString(tokens));        //ASSERTS
+    @Test
+    public void testLogInWithLegitInputs() throws Exception {
+        LoginRequest loginRequest = new LoginRequest("test@gmail.com","test123");
+        MvcResult mvcResult = mockMvc.perform(post("/api/v1/public/auth/login")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(loginRequest)))
+                .andExpect(status().isOk())
+                .andExpect(content().contentType(MediaType.APPLICATION_JSON))
+                .andExpect(jsonPath("$.accessToken").hasJsonPath())
+                .andExpect(jsonPath("$.accessToken").value(matchesPattern(".{442,}")))
+                .andExpect(jsonPath("$.refreshToken").hasJsonPath())
+                .andExpect(jsonPath("$.refreshToken").value(matchesPattern(".{442,}")))
+                .andReturn();
     }
 
     @Test
-    void testLogInBadRequestController() {
+    public void testLogInWithNotLegitInputs() throws Exception {
+        LoginRequest loginRequest = new LoginRequest("doesnotExist@gmail.com","test123");
+        MvcResult mvcResult = mockMvc.perform(post("/api/v1/public/auth/login")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(objectMapper.writeValueAsString(loginRequest)))
+                .andExpect(status().is(400))
+                .andExpect(jsonPath("$.exception").hasJsonPath())
+                .andExpect(jsonPath("$.exception").value("BadCredentialsException"))
+                .andReturn();
 
-    }*/
+    }
 }

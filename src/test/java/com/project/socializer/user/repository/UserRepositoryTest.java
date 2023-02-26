@@ -28,12 +28,13 @@ class UserRepositoryTest {
     @BeforeEach
     void setUp() {
         rolesRepository.save(new Roles("USER"));
-        userRepository.save(new UserEntity("Jhon","Doe","jhon.doe@gmail.com","test1234","1999-12-19",rolesRepository.getByRoleName("USER").get()));
+        userRepository.save(new UserEntity("Doe","Jhon","Doe","jhon.doe@gmail.com","test1234","1999-12-19",rolesRepository.getByRoleName("USER").get()));
     }
 
     @AfterEach
     void afterEach() {
         userRepository.deleteAll();
+        rolesRepository.deleteAll();
     }
 
     @Test

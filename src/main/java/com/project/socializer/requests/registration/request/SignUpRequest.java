@@ -14,27 +14,31 @@ import lombok.Setter;
 @AllArgsConstructor
 @NoArgsConstructor
 public class SignUpRequest {
+    @NotNull
+    @NotEmpty
+    @ValidName
+    String pseudo;
 
     @NotNull
     @NotEmpty
     @ValidName
- String firstName;
+    String firstName;
 
     @NotNull
     @NotEmpty
     @ValidName
- String lastName;
+    String lastName;
 
     @NotNull
     @NotEmpty
     @Email
- String email;
+    String email;
 
     @NotNull
     @NotEmpty
- String password;
+    String password;
 
     @NotNull
     @NotEmpty
- String birthDay;
+    String birthDay;
 }

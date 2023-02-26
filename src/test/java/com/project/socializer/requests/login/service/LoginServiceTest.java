@@ -29,8 +29,6 @@ class LoginServiceTest {
     @Mock
     JwtService jwtService;
     @Mock
-    HttpServletResponse httpServletResponse;
-    @Mock
     PrintWriter printWriter;
     @Mock
     Authentication authUser;
@@ -82,11 +80,11 @@ class LoginServiceTest {
         String password = "invalidPassword";
 
         //PREPARE
-        doThrow(new BadCredentialsException("Invalid Credentials"))
+        doThrow(BadCredentialsException.class)
                 .when(authenticationManager)
                 .authenticate(any(UsernamePasswordAuthenticationToken.class));
 
         //ASSERT
-        assertThrows(BadCredentialsException.class,()->{loginService.logInUser(email,password,httpServletResponse);});
+        assertThrows(BadCredentialsException.class,()->{loginService.logInUser(email,password,any(HttpServletResponse.class));});
     }
 }

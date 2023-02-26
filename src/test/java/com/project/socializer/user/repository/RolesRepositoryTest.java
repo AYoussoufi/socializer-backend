@@ -1,6 +1,7 @@
 package com.project.socializer.user.repository;
 
 import com.project.socializer.user.entity.Roles;
+import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -18,6 +19,11 @@ class RolesRepositoryTest {
     @BeforeEach
     void setUp() {
         rolesRepository.save(new Roles("USER"));
+    }
+
+    @AfterEach
+    void afterEach() {
+        rolesRepository.deleteAll();
     }
 
     @Test

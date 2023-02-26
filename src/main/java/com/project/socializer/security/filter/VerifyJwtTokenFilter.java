@@ -1,10 +1,8 @@
 package com.project.socializer.security.filter;
 
-import com.project.socializer.exception.ExceptionHandler;
-import com.project.socializer.requests.login.service.LoginService;
+import com.project.socializer.exception.JsonExceptionHandler;
 import com.project.socializer.security.jwt.JwtService;
 import com.project.socializer.user.service.UserDetailService;
-import com.project.socializer.util.GlobalVariable;
 import io.jsonwebtoken.JwtException;
 import jakarta.servlet.*;
 import jakarta.servlet.http.HttpServletRequest;
@@ -16,12 +14,9 @@ import org.springframework.security.authentication.UsernamePasswordAuthenticatio
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.stereotype.Component;
 
 import java.io.IOException;
-import java.security.NoSuchAlgorithmException;
-import java.security.spec.InvalidKeySpecException;
 import java.util.Collection;
 import java.util.Map;
 @NoArgsConstructor
@@ -31,7 +26,7 @@ public class VerifyJwtTokenFilter extends GenericFilter {
 
     JwtService jwtService;
     UserDetailService userDetailService;
-    ExceptionHandler exceptionHandler = new ExceptionHandler();
+    JsonExceptionHandler exceptionHandler = new JsonExceptionHandler();
 
 
     @Autowired
@@ -47,7 +42,7 @@ public class VerifyJwtTokenFilter extends GenericFilter {
         HttpServletRequest req = (HttpServletRequest) servletRequest;
         HttpServletResponse res = (HttpServletResponse) servletResponse;
         String actualUri= ((HttpServletRequest) servletRequest).getRequestURI();
-        if(!GlobalVariable.publicUri.contains(actualUri)){
+        if(!actualUri.contains("public")){
             //1.I GET MY DESIRED TOKENS
             Map<String,String> tokens = jwtService.getTokenFromHeader((HttpServletRequest) servletRequest);
             if(tokens != null){

@@ -4,6 +4,7 @@ import com.project.socializer.requests.refresh_jwt.service.RefreshJwtService;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -21,7 +22,7 @@ public class RefreshJwtController {
         this.refreshJwtService = refreshJwtService;
     }
 
-    @RequestMapping("/api/v1/public/auth/refresh/jwt")
+    @GetMapping("/api/v1/public/auth/refresh/jwt")
     public void refreshJwtToken(HttpServletResponse response, HttpServletRequest request) throws IOException, NoSuchAlgorithmException, InvalidKeySpecException {
         refreshJwtService.getNewAccessTokenThroughRefreshToken(request,response);
     }

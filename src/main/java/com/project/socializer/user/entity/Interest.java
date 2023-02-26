@@ -9,7 +9,7 @@ import java.util.Set;
 @Entity
 @Setter
 @Getter
-public class Hobby {
+public class Interest {
 
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
@@ -21,11 +21,11 @@ public class Hobby {
     @ManyToMany(mappedBy = "hobbies")
     private Set<UserEntity> user;
 
-    public Hobby(String name) {
+    public Interest(String name) {
         this.name = name;
     }
 
-    public Hobby() {
+    public Interest() {
 
     }
 }

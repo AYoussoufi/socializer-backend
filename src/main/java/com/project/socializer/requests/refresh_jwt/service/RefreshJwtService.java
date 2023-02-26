@@ -1,7 +1,6 @@
 package com.project.socializer.requests.refresh_jwt.service;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.project.socializer.exception.ExceptionHandler;
 import com.project.socializer.security.jwt.JwtService;
 import io.jsonwebtoken.JwtException;
 import jakarta.servlet.http.HttpServletRequest;
@@ -15,8 +14,10 @@ import java.security.NoSuchAlgorithmException;
 import java.security.spec.InvalidKeySpecException;
 import java.util.Map;
 
-@Service
+
+
 @Slf4j
+@Service
 public class RefreshJwtService {
 
     private final JwtService jwtService;
@@ -35,6 +36,7 @@ public class RefreshJwtService {
         if(jwtService.verifyToken(refreshJwtToken) && !jwtService.verifyToken(accessJwtToken)){
                 String username = jwtService.getUsernameFromToken(refreshJwtToken);
                 Map<String,String> newTokens = jwtService.createAccessRefreshJwtToken(username);
+                response.setContentType("application/json");
                 objectMapper.writeValue(response.getWriter(),newTokens);
         }else if(jwtService.verifyToken(accessJwtToken)) {
             throw new JwtException("AccessToken still valid please this endpoint is used to refresh the access token when invalid");

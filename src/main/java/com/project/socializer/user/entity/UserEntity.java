@@ -23,7 +23,8 @@ public class UserEntity implements UserDetails {
     @GeneratedValue(strategy = GenerationType.AUTO)
     @Column(nullable = false, unique = true)
     private Long id;
-
+    @Column(nullable = false,unique = true,length =20)
+    private String pseudo;
     @Column(nullable = false, unique = false, length = 45)
     private String firstName;
 
@@ -52,20 +53,20 @@ public class UserEntity implements UserDetails {
     private String imageFileName = "defaultImage";
 
     @Column(nullable = false)
-    private boolean isEnabled = true;
+    private boolean isEnabled = false;
 
     @ManyToMany
     private Set<Friend> friends = new HashSet<Friend>();
     @ManyToMany
-    private Set<Hobby> hobbies= new HashSet<Hobby>();
+    private Set<Interest> hobbies= new HashSet<Interest>();
     @ManyToMany
     private Set<Roles> roles = new HashSet<Roles>();
 
     public UserEntity() {
     }
 
-    public UserEntity(String firstName,String lastName,String email,String password,String birthDay,Roles roles) {
-        log.warn(roles.toString());
+    public UserEntity(String pseudo,String firstName,String lastName,String email,String password,String birthDay,Roles roles) {
+        this.pseudo = pseudo;
         this.firstName = firstName;
         this.lastName = lastName;
         this.email = email;

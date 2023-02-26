@@ -33,6 +33,7 @@ public class LoginService {
         try{
             Authentication authUser = authenticationManager.authenticate(usernamePasswordAuthenticationToken);
             Map<String, String> tokens = jwtService.createAccessRefreshJwtToken(username);
+            response.setContentType("application/json");
             this.objectMapper.writeValue(response.getWriter(),tokens);
         }catch (Exception e){
             throw new BadCredentialsException(e.getMessage());
