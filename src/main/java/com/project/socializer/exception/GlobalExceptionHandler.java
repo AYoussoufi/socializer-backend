@@ -24,7 +24,8 @@ public class GlobalExceptionHandler extends  ResponseEntityExceptionHandler {
             ValidationException.class,
             UserEmailNotFoundException.class,
             JwtException.class,
-            BadCredentialsException.class
+            BadCredentialsException.class,
+            Exception.class
     })
     public ResponseEntity<ExceptionResponse> handleException(Exception e, HttpServletRequest request, HttpServletResponse response){
         response.setStatus(400);

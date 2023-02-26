@@ -1,22 +1,17 @@
 package com.project.socializer.requests.registration.controller;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.project.socializer.requests.registration.request.SignUpRequest;
+import com.project.socializer.requests.registration.requestBody.SignUpRequest;
 import com.project.socializer.user.entity.Roles;
 import com.project.socializer.user.entity.UserEntity;
 import com.project.socializer.user.repository.RolesRepository;
 import com.project.socializer.user.repository.UserRepository;
-import jakarta.servlet.http.HttpServletRequest;
-import jakarta.servlet.http.HttpServletResponse;
 import jakarta.validation.ValidationException;
 import org.aspectj.lang.annotation.After;
 import org.aspectj.lang.annotation.Before;
-import org.junit.jupiter.api.AfterEach;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mock;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.MediaType;
@@ -24,9 +19,6 @@ import org.springframework.mock.web.MockHttpServletRequest;
 import org.springframework.mock.web.MockHttpServletResponse;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.validation.BindingResult;
-
-import java.text.SimpleDateFormat;
-import java.util.Date;
 
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.any;

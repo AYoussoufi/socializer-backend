@@ -1,7 +1,7 @@
 package com.project.socializer.requests.registration.services;
 
 import com.project.socializer.requests.registration.exception.UserExistException;
-import com.project.socializer.requests.registration.request.SignUpRequest;
+import com.project.socializer.requests.registration.requestBody.SignUpRequest;
 import com.project.socializer.user.entity.Roles;
 import com.project.socializer.user.entity.UserEntity;
 import com.project.socializer.user.repository.RolesRepository;

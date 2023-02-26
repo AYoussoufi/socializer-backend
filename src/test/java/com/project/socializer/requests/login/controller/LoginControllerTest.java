@@ -1,28 +1,21 @@
 package com.project.socializer.requests.login.controller;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.project.socializer.requests.login.request.LoginRequest;
-import com.project.socializer.requests.registration.request.SignUpRequest;
+import com.project.socializer.requests.login.requestBody.LoginRequest;
 import com.project.socializer.user.entity.Roles;
 import com.project.socializer.user.entity.UserEntity;
 import com.project.socializer.user.repository.RolesRepository;
 import com.project.socializer.user.repository.UserRepository;
-import lombok.extern.slf4j.Slf4j;
 import org.junit.jupiter.api.*;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.MediaType;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.MvcResult;
-
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.Map;
 
 import static org.hamcrest.Matchers.matchesPattern;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;

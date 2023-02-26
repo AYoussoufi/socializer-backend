@@ -1,4 +1,4 @@
-package com.project.socializer.requests.login.request;
+package com.project.socializer.requests.login.requestBody;
 
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotEmpty;

@@ -1,4 +1,4 @@
-package com.project.socializer.requests.registration.request.validation;
+package com.project.socializer.requests.registration.requestBody.validation;
 
 import jakarta.validation.Constraint;
 import jakarta.validation.Payload;

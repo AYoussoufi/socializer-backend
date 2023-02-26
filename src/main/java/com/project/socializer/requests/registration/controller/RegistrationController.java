@@ -1,6 +1,6 @@
 package com.project.socializer.requests.registration.controller;
 
-import com.project.socializer.requests.registration.request.SignUpRequest;
+import com.project.socializer.requests.registration.requestBody.SignUpRequest;
 import com.project.socializer.requests.registration.services.RegistrationService;
 import com.project.socializer.util.responsewriter.ResponseBody;
 import com.project.socializer.util.responsewriter.ResponseWriter;

@@ -1,6 +1,6 @@
-package com.project.socializer.requests.registration.request;
+package com.project.socializer.requests.registration.requestBody;
 
-import com.project.socializer.requests.registration.request.validation.ValidName;
+import com.project.socializer.requests.registration.requestBody.validation.ValidName;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.NotNull;

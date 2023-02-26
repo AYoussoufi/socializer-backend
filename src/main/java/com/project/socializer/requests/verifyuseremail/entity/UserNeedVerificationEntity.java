@@ -10,7 +10,7 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor
 @Entity
-public class VerifyUserEmailEntity {
+public class UserNeedVerificationEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
@@ -23,7 +23,7 @@ public class VerifyUserEmailEntity {
     @Column(nullable = false,unique = true)
     private Integer attempt;
 
-    public VerifyUserEmailEntity(String email, Integer codePin, String expireDate, Integer attempt) {
+    public UserNeedVerificationEntity(String email, Integer codePin, String expireDate, Integer attempt) {
         this.email = email;
         this.codePin = codePin;
         this.expireDate = expireDate;
