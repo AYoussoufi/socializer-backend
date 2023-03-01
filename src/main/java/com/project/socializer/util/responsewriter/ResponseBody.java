@@ -21,10 +21,12 @@ public class ResponseBody {
 
     public Map<String , Object> getResponseBodyMap(){
         Map<String,Object> responseBody = new HashMap<>();
-        responseBody.put("status",this.status);
-        responseBody.put("message",this.message);
-        responseBody.put("date",this.date);
+
         responseBody.put("path",this.path);
+        responseBody.put("date",this.date);
+        responseBody.put("message",this.message);
+        responseBody.put("status",this.status);
+
         return responseBody;
     }
 }

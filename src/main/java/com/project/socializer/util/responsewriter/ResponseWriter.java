@@ -16,8 +16,13 @@ public class ResponseWriter {
         this.objectMapper = objectMapper;
     }
 
-    public void writeJsonResponse(HttpServletResponse response,ResponseBody responseBody) throws IOException {
-        response.setContentType("application/json");
-        objectMapper.writeValue(response.getWriter(),responseBody.getResponseBodyMap());
+    public void writeJsonResponse(HttpServletResponse response,ResponseBody responseBody)  {
+        try{
+            response.setContentType("application/json");
+            objectMapper.writeValue(response.getWriter(),responseBody.getResponseBodyMap());
+        }catch (IOException e){
+            throw new RuntimeException(e.getMessage());
+        }
+
     }
 }

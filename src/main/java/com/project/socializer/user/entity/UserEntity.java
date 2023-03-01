@@ -1,5 +1,6 @@
 package com.project.socializer.user.entity;
 
+import com.project.socializer.requests.verifyuseremail.entity.UserNeedVerificationEntity;
 import jakarta.persistence.*;
 
 import java.util.HashSet;
@@ -23,7 +24,7 @@ public class UserEntity implements UserDetails {
     @GeneratedValue(strategy = GenerationType.AUTO)
     @Column(nullable = false, unique = true)
     private Long id;
-    @Column(nullable = false,unique = true,length =20)
+    @Column(nullable = false,unique = false,length =20)
     private String pseudo;
     @Column(nullable = false, unique = false, length = 45)
     private String firstName;
@@ -61,6 +62,8 @@ public class UserEntity implements UserDetails {
     private Set<Interest> hobbies= new HashSet<Interest>();
     @ManyToMany
     private Set<Roles> roles = new HashSet<Roles>();
+    @OneToOne(mappedBy = "userEntity",cascade = CascadeType.ALL, orphanRemoval = true)
+    private UserNeedVerificationEntity userNeedVerificationEntity;
 
     public UserEntity() {
     }

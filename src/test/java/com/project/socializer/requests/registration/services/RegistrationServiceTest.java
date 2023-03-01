@@ -2,6 +2,7 @@ package com.project.socializer.requests.registration.services;
 
 import com.project.socializer.requests.registration.exception.UserExistException;
 import com.project.socializer.requests.registration.requestBody.SignUpRequest;
+import com.project.socializer.requests.verifyuseremail.repository.UserNeedVerificationRepository;
 import com.project.socializer.user.entity.Roles;
 import com.project.socializer.user.entity.UserEntity;
 import com.project.socializer.user.repository.RolesRepository;
@@ -32,12 +33,14 @@ public class RegistrationServiceTest {
     @Mock
     private PasswordEncoder passwordEncoder;
 
+    @Mock
+    private UserNeedVerificationRepository userNeedVerificationRepository;
 
     private RegistrationService registrationService;
 
     @BeforeEach
     void SetUp(){
-        this.registrationService = new RegistrationService(userRepository,rolesRepository,passwordEncoder);
+        this.registrationService = new RegistrationService(userRepository,rolesRepository,passwordEncoder,userNeedVerificationRepository);
     }
 
     @Test
